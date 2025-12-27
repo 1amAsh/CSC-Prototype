@@ -1,0 +1,139 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ competition.title }}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+        <div class="card-custom mb-4">
+            <div class="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-4">
+                <div class="flex-grow-1">
+                    <div class="d-flex align-items-center gap-3 mb-2">
+                        <h1 class="display-5 fw-bold mb-0">{{ competition.title }}</h1>
+                        <span class="badge {% if competition.status == 'active' %}bg-success{% elif competition.status == 'upcoming' %}bg-primary{% else %}bg-secondary{% endif %} px-3 py-2">
+                            {% if competition.status == 'active' %}
+                                <i class="bi bi-play-circle"></i>
+                            {% elif competition.status == 'upcoming' %}
+                                <i class="bi bi-clock"></i>
+                            {% else %}
+                                <i class="bi bi-check-circle"></i>
+                            {% endif %}
+                            {{ competition.get_status_display }}
+                        </span>
+                    </div>
+                    <p class="text-secondary mb-0">
+                        <i class="bi bi-calendar-event"></i> {{ competition.start_date|date:"M d, Y" }} - {{ competition.end_date|date:"M d, Y" }}
+                    </p>
+                </div>
+                {% if user.is_admin %}
+                    <div class="btn-group">
+                        <a href="{% url 'competitions:problem_add' competition.pk %}" class="btn btn-success btn-sm">
+                            <i class="bi bi-plus-circle"></i> Add Problem
+                        </a>
+                        <a href="{% url 'competitions:submissions' competition.pk %}" class="btn btn-info btn-sm">
+                            <i class="bi bi-file-text"></i> Submissions
+                        </a>
+                        <a href="{% url 'competitions:edit' competition.pk %}" class="btn btn-warning btn-sm">
+                            <i class="bi bi-pencil"></i> Edit
+                        </a>
+                        <a href="{% url 'competitions:delete' competition.pk %}" class="btn btn-danger btn-sm">
+                            <i class="bi bi-trash"></i> Delete
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+            
+            <div class="card-custom mb-4" style="background: var(--bg-tertiary);">
+                <h4 class="mb-3"><i class="bi bi-info-circle"></i> Description</h4>
+                <p style="white-space: pre-wrap; color: var(--text-primary); line-height: 1.8;">{{ competition.description }}</p>
+                <div class="row g-3 mt-2 pt-3 border-top" style="border-color: var(--border-color) !important;">
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-center gap-2">
+                            <i class="bi bi-trophy text-warning"></i>
+                            <span class="text-secondary">Max Score:</span>
+                            <strong style="color: var(--text-primary);">{{ competition.max_score }} points</strong>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-center gap-2">
+                            <i class="bi bi-people" style="color: var(--accent-primary);"></i>
+                            <span class="text-secondary">Participants:</span>
+                            <strong style="color: var(--text-primary);">{{ competition.total_participants }}</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <h2 class="mb-4"><i class="bi bi-puzzle"></i> Problems</h2>
+        {% if problems %}
+            <div class="row g-4 mb-4">
+                {% for problem in problems %}
+                    <div class="col-12">
+                        <div class="card-custom" style="border-left: 4px solid var(--accent-primary);">
+                            <div class="d-flex justify-content-between align-items-start gap-3">
+                                <div class="flex-grow-1">
+                                    <h4 class="mb-3">
+                                        <span class="badge bg-primary me-2">{{ forloop.counter }}</span>
+                                        {{ problem.title }}
+                                    </h4>
+                                    <p style="white-space: pre-wrap; color: var(--text-secondary); line-height: 1.6;">{{ problem.description }}</p>
+                                </div>
+                                <div class="text-center">
+                                    <div class="rounded-circle d-inline-flex align-items-center justify-content-center" 
+                                         style="width: 60px; height: 60px; background: linear-gradient(135deg, #6366f1, #8b5cf6); color: white; font-weight: 600;">
+                                        {{ problem.points }}
+                                    </div>
+                                    <small class="d-block text-secondary mt-1">points</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="card-custom text-center py-5 mb-4">
+                <i class="bi bi-puzzle display-1 text-secondary mb-3"></i>
+                <h4>No Problems Added Yet</h4>
+                <p class="text-secondary mb-0">Problems will appear here once they're added</p>
+            </div>
+        {% endif %}
+        
+        {% if not user.is_admin %}
+            <div class="card-custom text-center">
+                {% if user_submission %}
+                    <div class="alert alert-success mb-3">
+                        <h5 class="alert-heading mb-2">
+                            <i class="bi bi-check-circle-fill"></i> You've Submitted a Solution!
+                        </h5>
+                        <div class="row g-3 justify-content-center">
+                            <div class="col-auto">
+                                <strong>Score:</strong> {{ user_submission.score }}/{{ competition.max_score }}
+                            </div>
+                            <div class="col-auto">
+                                <strong>Rank:</strong> #{{ user_submission.rank|default:"Unranked" }}
+                            </div>
+                        </div>
+                    </div>
+                    <a href="{% url 'competitions:submit' competition.pk %}" class="btn btn-warning btn-lg">
+                        <i class="bi bi-arrow-repeat"></i> Update Submission
+                    </a>
+                {% else %}
+                    <a href="{% url 'competitions:submit' competition.pk %}" class="btn btn-primary btn-lg">
+                        <i class="bi bi-send"></i> Submit Solution
+                    </a>
+                {% endif %}
+                <a href="{% url 'competitions:leaderboard' competition.pk %}" class="btn btn-info btn-lg">
+                    <i class="bi bi-list-ol"></i> View Leaderboard
+                </a>
+            </div>
+        {% endif %}
+        
+        <div class="text-center mt-4">
+            <a href="{% url 'competitions:list' %}" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Back to Competitions
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

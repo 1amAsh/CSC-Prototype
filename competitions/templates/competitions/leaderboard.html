@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+
+{% block title %}Leaderboard - {{ competition.title }}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+        <div class="text-center mb-5">
+            <div class="rounded-circle d-inline-flex align-items-center justify-content-center mb-3" 
+                 style="width: 100px; height: 100px; background: linear-gradient(135deg, #f59e0b, #d97706); color: white; font-size: 3rem;">
+                <i class="bi bi-trophy-fill"></i>
+            </div>
+            <h1 class="display-4 fw-bold" style="background: linear-gradient(135deg, #f59e0b, #d97706); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                Leaderboard
+            </h1>
+            <p class="text-secondary">{{ competition.title }}</p>
+        </div>
+
+        {% if leaderboard %}
+            <div class="row g-4">
+                {% for submission in leaderboard %}
+                    <div class="col-12">
+                        <div class="card-custom {% if forloop.counter <= 3 %}position-relative overflow-hidden{% endif %}" 
+                             style="{% if forloop.counter == 1 %}border-left: 5px solid #ffd700; background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(255, 215, 0, 0.05));{% elif forloop.counter == 2 %}border-left: 5px solid #c0c0c0; background: linear-gradient(135deg, rgba(192, 192, 192, 0.1), rgba(192, 192, 192, 0.05));{% elif forloop.counter == 3 %}border-left: 5px solid #cd7f32; background: linear-gradient(135deg, rgba(205, 127, 50, 0.1), rgba(205, 127, 50, 0.05));{% else %}border-left: 4px solid var(--accent-primary);{% endif %}">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="d-flex align-items-center gap-3 flex-grow-1">
+                                    {% if forloop.counter <= 3 %}
+                                        <div class="rounded-circle d-flex align-items-center justify-content-center" 
+                                             style="width: 60px; height: 60px; background: {% if forloop.counter == 1 %}linear-gradient(135deg, #ffd700, #ffed4e){% elif forloop.counter == 2 %}linear-gradient(135deg, #c0c0c0, #e8e8e8){% else %}linear-gradient(135deg, #cd7f32, #d4a574){% endif %}; color: white; font-size: 2rem; font-weight: 600;">
+                                            {% if forloop.counter == 1 %}
+                                                🥇
+                                            {% elif forloop.counter == 2 %}
+                                                🥈
+                                            {% else %}
+                                                🥉
+                                            {% endif %}
+                                        </div>
+                                    {% else %}
+                                        <div class="rounded-circle d-flex align-items-center justify-content-center" 
+                                             style="width: 50px; height: 50px; background: var(--bg-tertiary); color: var(--text-primary); font-size: 1.5rem; font-weight: 600;">
+                                            #{{ submission.rank }}
+                                        </div>
+                                    {% endif %}
+                                    
+                                    <div class="flex-grow-1">
+                                        <h4 class="mb-1">
+                                            {{ submission.user.first_name }} {{ submission.user.last_name }}
+                                            {% if forloop.counter <= 3 %}
+                                                <i class="bi bi-star-fill" style="color: {% if forloop.counter == 1 %}#ffd700{% elif forloop.counter == 2 %}#c0c0c0{% else %}#cd7f32{% endif %};"></i>
+                                            {% endif %}
+                                        </h4>
+                                        <p class="mb-0 small text-secondary">@{{ submission.user.username }}</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="text-end">
+                                    <h2 class="mb-1 fw-bold" style="color: var(--accent-primary);">{{ submission.score }}</h2>
+                                    <p class="mb-0 text-secondary">/ {{ competition.max_score }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="card-custom text-center py-5">
+                <i class="bi bi-trophy display-1 text-secondary mb-3"></i>
+                <h4>No Submissions Yet</h4>
+                <p class="text-secondary mb-0">Be the first to submit a solution and claim the top spot!</p>
+            </div>
+        {% endif %}
+        
+        <div class="text-center mt-5">
+            <a href="{% url 'competitions:detail' competition.pk %}" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Back to Competition
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+{% block title %}Chat - {{ other_user.username }}{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card-custom p-0 overflow-hidden">
+            <div class="p-3" style="background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary)); color: white;">
+                <h4 class="mb-0">
+                    <i class="bi bi-person-circle"></i> 
+                    {{ other_user.first_name }} {{ other_user.last_name }}
+                    <small class="opacity-75">({{ other_user.username }})</small>
+                </h4>
+            </div>
+            
+            <div id="messages-container" style="height: 500px; overflow-y: auto; padding: 1.5rem; background: var(--bg-primary);">
+                {% for msg in messages %}
+                    <div class="d-flex mb-3 {% if msg.sender == user %}justify-content-end{% endif %}">
+                        <div style="max-width: 70%;">
+                            <div class="px-3 py-2 rounded-3 {% if msg.sender == user %}text-white{% else %}text-dark{% endif %}" 
+                                 style="background: {% if msg.sender == user %}linear-gradient(135deg, #6366f1, #8b5cf6){% else %}var(--bg-tertiary){% endif %};">
+                                <div class="small fw-bold mb-1">{{ msg.sender.username }}</div>
+                                <div style="white-space: pre-wrap;">{{ msg.content }}</div>
+                                <div class="small opacity-75 mt-1">{{ msg.created_at|date:"g:i A" }}</div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            
+            {% if message_limit_warning %}
+                <div class="alert alert-warning m-3">
+                    <i class="bi bi-exclamation-triangle"></i> {{ message_limit_warning }}
+                </div>
+            {% endif %}
+            
+            {% if can_send %}
+                <form method="post" action="{% url 'messaging:send' other_user.id %}" class="p-3 border-top">
+                    {% csrf_token %}
+                    <div class="input-group">
+                        <textarea name="content" id="message-input" rows="2" placeholder="Type a message..." 
+                                  class="form-control" required style="resize: none;"></textarea>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-send"></i> Send
+                        </button>
+                    </div>
+                </form>
+            {% else %}
+                <div class="p-3 text-center text-danger border-top">
+                    <i class="bi bi-lock"></i> You cannot send more messages until they reply.
+                </div>
+            {% endif %}
+        </div>
+        
+        <div class="text-center mt-3">
+            <a href="{% url 'messaging:inbox' %}" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Back to Inbox
+            </a>
+        </div>
+    </div>
+</div>
+
+<script>
+let lastMessageId = {{ messages.last.id|default:0 }};
+function scrollToBottom() {
+    const container = document.getElementById('messages-container');
+    container.scrollTop = container.scrollHeight;
+}
+scrollToBottom();
+
+setInterval(() => {
+    fetch(`/messages/api/check-new/?user_id={{ other_user.id }}&last_check=${lastMessageId}`)
+        .then(r => r.json())
+        .then(data => {
+            if (data.new_messages.length > 0) {
+                data.new_messages.forEach(msg => {
+                    const container = document.getElementById('messages-container');
+                    const div = document.createElement('div');
+                    div.className = `d-flex mb-3 ${msg.is_mine ? 'justify-content-end' : ''}`;
+                    div.innerHTML = `
+                        <div style="max-width: 70%;">
+                            <div class="px-3 py-2 rounded-3 ${msg.is_mine ? 'text-white' : 'text-dark'}" 
+                                 style="background: ${msg.is_mine ? 'linear-gradient(135deg, #6366f1, #8b5cf6)' : 'var(--bg-tertiary)'};">
+                                <div class="small fw-bold mb-1">${msg.sender}</div>
+                                <div style="white-space: pre-wrap;">${msg.content}</div>
+                                <div class="small opacity-75 mt-1">${msg.time}</div>
+                            </div>
+                        </div>
+                    `;
+                    container.appendChild(div);
+                    scrollToBottom();
+                    lastMessageId = msg.id;
+                });
+            }
+        });
+}, 2000);
+</script>
+{% endblock %}

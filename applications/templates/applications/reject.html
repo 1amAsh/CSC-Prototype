@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block title %}Reject Application{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-5 col-md-7">
+        <div class="card-custom">
+            <div class="text-center mb-4">
+                <div class="rounded-circle d-inline-flex align-items-center justify-content-center mb-3" 
+                     style="width: 80px; height: 80px; background: linear-gradient(135deg, #ef4444, #dc2626); color: white; font-size: 2rem;">
+                    <i class="bi bi-x-circle-fill"></i>
+                </div>
+                <h1 class="display-5 fw-bold" style="background: linear-gradient(135deg, #ef4444, #dc2626); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                    Reject Application
+                </h1>
+                <p class="text-secondary">Provide a reason for internal records</p>
+            </div>
+            
+            <div class="card-custom mb-4" style="background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(220, 38, 38, 0.05)); border-left: 4px solid var(--danger);">
+                <h6 class="mb-2 fw-bold">{{ application.first_name }} {{ application.last_name }}</h6>
+                <p class="mb-1 small text-secondary">@{{ application.username }}</p>
+                <p class="mb-0 small text-secondary">{{ application.email }}</p>
+            </div>
+            
+            <form method="post">
+                {% csrf_token %}
+                
+                <div class="mb-4">
+                    <label for="reason" class="form-label fw-bold">
+                        <i class="bi bi-chat-left-text"></i> Rejection Reason
+                    </label>
+                    <textarea 
+                        id="reason" 
+                        name="reason" 
+                        rows="4"
+                        class="form-control"
+                        placeholder="Optional: Note why this application was rejected..."
+                    ></textarea>
+                    <small class="text-secondary">For internal records only</small>
+                </div>
+                
+                <button type="submit" class="btn btn-danger w-100 btn-lg mb-2">
+                    <i class="bi bi-trash"></i> Confirm Rejection
+                </button>
+                <a href="{% url 'applications:detail' application.pk %}" class="btn btn-secondary w-100">
+                    <i class="bi bi-arrow-left"></i> Cancel
+                </a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

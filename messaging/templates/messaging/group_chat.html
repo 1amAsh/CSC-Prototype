@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ group_name }}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+        <div class="card-custom p-0 overflow-hidden">
+            <div class="p-4" style="background: {% if group_type == 'admin' %}linear-gradient(135deg, #ef4444, #dc2626){% else %}linear-gradient(135deg, #10b981, #059669){% endif %}; color: white;">
+                <h2 class="mb-0">
+                    <i class="bi bi-{% if group_type == 'admin' %}shield-fill-check{% else %}people-fill{% endif %}"></i> 
+                    {{ group_name }}
+                </h2>
+            </div>
+            
+            <div id="group-messages" class="p-4" style="background: var(--bg-primary); min-height: 400px; max-height: 500px; overflow-y: auto;">
+                {% for msg in messages %}
+                    <div class="d-flex mb-3 {% if msg.sender == user %}justify-content-end{% endif %}">
+                        <div style="max-width: 70%;">
+                            <div class="px-3 py-2 rounded-3" 
+                                 style="background: {% if msg.sender == user %}linear-gradient(135deg, #6366f1, #8b5cf6){% else %}var(--bg-tertiary){% endif %}; 
+                                        color: {% if msg.sender == user %}white{% else %}var(--text-primary){% endif %};">
+                                <div class="small fw-bold mb-1 d-flex align-items-center gap-2">
+                                    {{ msg.sender.first_name }} {{ msg.sender.last_name }}
+                                    {% if msg.sender.is_admin %}
+                                        <span class="badge bg-warning text-dark">ADMIN</span>
+                                    {% endif %}
+                                </div>
+                                <div style="white-space: pre-wrap;">{{ msg.content }}</div>
+                                <div class="small opacity-75 mt-1">{{ msg.created_at|date:"g:i A" }}</div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            
+            <form method="post" action="{% url 'messaging:send_group' group_type %}" class="p-3 border-top" style="background: var(--bg-secondary); border-color: var(--border-color) !important;">
+                {% csrf_token %}
+                <div class="input-group">
+                    <textarea name="content" rows="2" placeholder="Type a message..." 
+                              class="form-control" required style="resize: none;"></textarea>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-send"></i> Send
+                    </button>
+                </div>
+            </form>
+        </div>
+        
+        <div class="text-center mt-3">
+            <a href="{% url 'messaging:inbox' %}" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Back to Messages
+            </a>
+        </div>
+    </div>
+</div>
+
+<script>
+let lastGroupMsgId = {{ messages.last.id|default:0 }};
+
+function scrollToBottom() {
+    const container = document.getElementById('group-messages');
+    container.scrollTop = container.scrollHeight;
+}
+
+scrollToBottom();
+
+setInterval(() => {
+    fetch(`/messages/api/check-new/?group_type={{ group_type }}&last_check=${lastGroupMsgId}`)
+        .then(r => r.json())
+        .then(data => {
+            if (data.new_messages.length > 0) {
+                data.new_messages.forEach(msg => {
+                    const container = document.getElementById('group-messages');
+                    const div = document.createElement('div');
+                    div.className = `d-flex mb-3 ${msg.is_mine ? 'justify-content-end' : ''}`;
+                    div.innerHTML = `
+                        <div style="max-width: 70%;">
+                            <div class="px-3 py-2 rounded-3" 
+                                 style="background: ${msg.is_mine ? 'linear-gradient(135deg, #6366f1, #8b5cf6)' : 'var(--bg-tertiary)'}; 
+                                        color: ${msg.is_mine ? 'white' : 'var(--text-primary)'};">
+                                <div class="small fw-bold mb-1">${msg.sender_name}${msg.is_admin ? ' <span class="badge bg-warning text-dark">ADMIN</span>' : ''}</div>
+                                <div style="white-space: pre-wrap;">${msg.content}</div>
+                                <div class="small opacity-75 mt-1">${msg.time}</div>
+                            </div>
+                        </div>
+                    `;
+                    container.appendChild(div);
+                    scrollToBottom();
+                    lastGroupMsgId = msg.id;
+                });
+            }
+        });
+}, 2000);
+</script>
+{% endblock %}

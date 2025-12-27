@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block title %}Submissions - {{ competition.title }}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h1 class="display-5 fw-bold"><i class="bi bi-file-text"></i> Submissions</h1>
+                <p class="text-secondary mb-0">{{ competition.title }}</p>
+            </div>
+        </div>
+
+        {% if submissions %}
+            <div class="row g-4">
+                {% for sub in submissions %}
+                    <div class="col-12">
+                        <div class="card-custom" style="border-left: 4px solid var(--accent-primary);">
+                            <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                                <div class="d-flex align-items-center gap-3 flex-grow-1">
+                                    <div class="rounded-circle d-flex align-items-center justify-content-center" 
+                                         style="width: 50px; height: 50px; background: linear-gradient(135deg, #6366f1, #8b5cf6); color: white; font-weight: 600; font-size: 1.25rem;">
+                                        {{ sub.user.first_name.0 }}{{ sub.user.last_name.0 }}
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <h4 class="mb-1">{{ sub.user.first_name }} {{ sub.user.last_name }}</h4>
+                                        <p class="mb-0 small text-secondary">
+                                            @{{ sub.user.username }} • Submitted: {{ sub.submitted_at|date:"M d, Y g:i A" }}
+                                        </p>
+                                    </div>
+                                </div>
+                                
+                                <div class="text-end">
+                                    <div class="mb-2">
+                                        <strong style="color: var(--text-primary);">Score:</strong> 
+                                        <span style="color: var(--accent-primary); font-size: 1.25rem; font-weight: 600;">{{ sub.score }}</span>
+                                        <span class="text-secondary">/ {{ competition.max_score }}</span>
+                                    </div>
+                                    <div class="mb-2">
+                                        <strong style="color: var(--text-primary);">Rank:</strong> 
+                                        <span class="badge bg-primary">#{{ sub.rank|default:"Unranked" }}</span>
+                                    </div>
+                                    <a href="{% url 'competitions:score_submission' sub.pk %}" class="btn btn-primary btn-sm">
+                                        <i class="bi bi-star"></i> Score/View
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="card-custom text-center py-5">
+                <i class="bi bi-inbox display-1 text-secondary mb-3"></i>
+                <h4>No Submissions Yet</h4>
+                <p class="text-secondary mb-0">Submissions will appear here once members start submitting solutions</p>
+            </div>
+        {% endif %}
+        
+        <div class="text-center mt-5">
+            <a href="{% url 'competitions:detail' competition.pk %}" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Back to Competition
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

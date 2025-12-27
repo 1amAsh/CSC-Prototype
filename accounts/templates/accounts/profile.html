@@ -1,0 +1,159 @@
+{% extends 'base.html' %}
+
+{% block title %}Profile - {{ user.username }}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card-custom">
+            <div class="text-center mb-4">
+                <div class="rounded-circle d-inline-flex align-items-center justify-content-center mb-3" 
+                     style="width: 100px; height: 100px; background: linear-gradient(135deg, #6366f1, #8b5cf6); color: white; font-weight: 600; font-size: 2.5rem;">
+                    {% if user.first_name and user.last_name %}
+                        {{ user.first_name.0 }}{{ user.last_name.0 }}
+                    {% else %}
+                        {{ user.username.0|upper }}
+                    {% endif %}
+                </div>
+                <h2 class="mb-2">Your Profile</h2>
+                <p class="text-secondary">Update your information below. All fields are required.</p>
+            </div>
+
+            <form method="post">
+                {% csrf_token %}
+                
+                <div class="card-custom mb-4" style="background: var(--bg-tertiary);">
+                    <h5 class="mb-3"><i class="bi bi-lock-fill"></i> Account Information</h5>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Username</label>
+                            <input type="text" class="form-control" value="{{ user.username }}" disabled>
+                            <small class="text-secondary">Cannot be changed</small>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Email</label>
+                            <input type="email" class="form-control" value="{{ user.email }}" disabled>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label fw-bold">Role</label>
+                            <div class="d-flex gap-2 align-items-center">
+                                <span class="badge {% if user.is_admin %}bg-success{% else %}bg-primary{% endif %} px-3 py-2">
+                                    {% if user.is_admin %}
+                                        <i class="bi bi-shield-fill-check"></i> ADMIN
+                                    {% else %}
+                                        <i class="bi bi-person-fill"></i> MEMBER
+                                    {% endif %}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <h5 class="mb-3"><i class="bi bi-person-fill"></i> Personal Information</h5>
+                
+                <div class="row g-3 mb-3">
+                    <div class="col-md-6">
+                        <label for="first_name" class="form-label fw-bold">
+                            <i class="bi bi-person"></i> First Name *
+                        </label>
+                        <input 
+                            type="text" 
+                            id="first_name" 
+                            name="first_name" 
+                            value="{{ user.first_name }}"
+                            required
+                            class="form-control"
+                        >
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <label for="last_name" class="form-label fw-bold">
+                            <i class="bi bi-person"></i> Last Name *
+                        </label>
+                        <input 
+                            type="text" 
+                            id="last_name" 
+                            name="last_name" 
+                            value="{{ user.last_name }}"
+                            required
+                            class="form-control"
+                        >
+                    </div>
+                </div>
+                
+                <div class="row g-3 mb-3">
+                    <div class="col-md-6">
+                        <label for="age" class="form-label fw-bold">
+                            <i class="bi bi-calendar"></i> Age *
+                        </label>
+                        <input 
+                            type="number" 
+                            id="age" 
+                            name="age" 
+                            value="{{ profile.age|default:'' }}"
+                            required
+                            class="form-control"
+                        >
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <label for="school" class="form-label fw-bold">
+                            <i class="bi bi-building"></i> School *
+                        </label>
+                        <input 
+                            type="text" 
+                            id="school" 
+                            name="school" 
+                            value="{{ profile.school }}"
+                            required
+                            class="form-control"
+                        >
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="programming_experience" class="form-label fw-bold">
+                        <i class="bi bi-code-slash"></i> Programming Experience *
+                    </label>
+                    <textarea 
+                        id="programming_experience" 
+                        name="programming_experience" 
+                        rows="4"
+                        required
+                        class="form-control"
+                    >{{ profile.programming_experience }}</textarea>
+                </div>
+                
+                <div class="mb-4">
+                    <label for="bio" class="form-label fw-bold">
+                        <i class="bi bi-chat-left-text"></i> Bio
+                        <span class="text-secondary fw-normal">(max 500 characters)</span>
+                    </label>
+                    <textarea 
+                        id="bio" 
+                        name="bio" 
+                        rows="4"
+                        maxlength="500"
+                        class="form-control"
+                    >{{ profile.bio }}</textarea>
+                    <small class="text-secondary">{{ profile.bio|length }}/500 characters</small>
+                </div>
+                
+                <button type="submit" class="btn btn-primary w-100 btn-lg">
+                    <i class="bi bi-check-circle"></i> Update Profile
+                </button>
+            </form>
+
+            {% if profile.is_complete %}
+                <div class="alert alert-success mt-4 mb-0">
+                    <i class="bi bi-check-circle-fill"></i> Your profile is complete!
+                </div>
+            {% else %}
+                <div class="alert alert-warning mt-4 mb-0">
+                    <i class="bi bi-exclamation-triangle-fill"></i> Please complete all required fields (marked with *).
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

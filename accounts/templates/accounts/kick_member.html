@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block title %}Remove Member{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-5 col-md-7">
+        <div class="card-custom">
+            <div class="text-center mb-4">
+                <div class="rounded-circle d-inline-flex align-items-center justify-content-center mb-3" 
+                     style="width: 80px; height: 80px; background: linear-gradient(135deg, #ef4444, #dc2626); color: white; font-size: 2rem;">
+                    <i class="bi bi-exclamation-triangle-fill"></i>
+                </div>
+                <h1 class="display-5 fw-bold" style="background: linear-gradient(135deg, #ef4444, #dc2626); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                    Remove Member
+                </h1>
+                <p class="text-secondary">This action cannot be undone</p>
+            </div>
+            
+            <div class="card-custom mb-4" style="background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(220, 38, 38, 0.05)); border-left: 4px solid var(--danger);">
+                <h6 class="mb-2 fw-bold">{{ member.first_name }} {{ member.last_name }}</h6>
+                <p class="mb-1 small text-secondary">@{{ member.username }}</p>
+                <p class="mb-1 small text-secondary">{{ member.email }}</p>
+                {% if member.profile.school %}
+                    <p class="mb-0 small text-secondary">{{ member.profile.school }}</p>
+                {% endif %}
+            </div>
+            
+            <form method="post">
+                {% csrf_token %}
+                
+                <div class="mb-3">
+                    <label for="reason" class="form-label fw-bold">
+                        <i class="bi bi-chat-left-text"></i> Reason for Removal *
+                    </label>
+                    <textarea 
+                        id="reason" 
+                        name="reason" 
+                        rows="4"
+                        required
+                        class="form-control"
+                        placeholder="Explain why this member is being removed..."
+                    ></textarea>
+                </div>
+                
+                <div class="alert alert-warning mb-4">
+                    <h6 class="alert-heading mb-2">
+                        <i class="bi bi-exclamation-triangle-fill"></i> Warning
+                    </h6>
+                    <small>
+                        • Removes account permanently<br>
+                        • Archives data in rejected applications<br>
+                        • Deletes all posts and comments
+                    </small>
+                </div>
+                
+                <button type="submit" class="btn btn-danger w-100 btn-lg mb-2">
+                    <i class="bi bi-trash"></i> Confirm Removal
+                </button>
+                <a href="{% url 'accounts:members' %}" class="btn btn-secondary w-100">
+                    <i class="bi bi-x-circle"></i> Cancel
+                </a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

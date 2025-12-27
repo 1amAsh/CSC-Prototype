@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block title %}New Message{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-5 col-md-7">
+        <div class="card-custom">
+            <div class="text-center mb-4">
+                <div class="rounded-circle d-inline-flex align-items-center justify-content-center mb-3" 
+                     style="width: 80px; height: 80px; background: linear-gradient(135deg, #6366f1, #8b5cf6); color: white; font-size: 2rem;">
+                    <i class="bi bi-chat-dots"></i>
+                </div>
+                <h1 class="display-5 fw-bold" style="background: linear-gradient(135deg, #6366f1, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                    New Conversation
+                </h1>
+                <p class="text-secondary">Select a member to chat with</p>
+            </div>
+            
+            <form method="post">
+                {% csrf_token %}
+                
+                <div class="mb-4">
+                    <label for="username" class="form-label fw-bold">
+                        <i class="bi bi-person"></i> Select User
+                    </label>
+                    <select name="username" id="username" class="form-select form-select-lg" required>
+                        <option value="">-- Choose a user --</option>
+                        {% for u in users %}
+                            <option value="{{ u.username }}">
+                                {{ u.first_name }} {{ u.last_name }} (@{{ u.username }})
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <button type="submit" class="btn btn-primary w-100 btn-lg mb-2">
+                    <i class="bi bi-chat-dots"></i> Start Conversation
+                </button>
+                <a href="{% url 'messaging:inbox' %}" class="btn btn-secondary w-100">
+                    <i class="bi bi-arrow-left"></i> Cancel
+                </a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block title %}Blocked Users{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="text-center mb-4">
+            <div class="rounded-circle d-inline-flex align-items-center justify-content-center mb-3" 
+                 style="width: 80px; height: 80px; background: linear-gradient(135deg, #6c757d, #495057); color: white; font-size: 2rem;">
+                <i class="bi bi-slash-circle"></i>
+            </div>
+            <h1 class="display-5 fw-bold">Blocked Users</h1>
+            <p class="text-secondary">Manage users you've blocked</p>
+        </div>
+
+        {% if blocked_users %}
+            <div class="row g-4">
+                {% for block in blocked_users %}
+                    <div class="col-12">
+                        <div class="card-custom" style="border-left: 4px solid var(--danger);">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="d-flex align-items-center gap-3 flex-grow-1">
+                                    <div class="rounded-circle d-flex align-items-center justify-content-center" 
+                                         style="width: 50px; height: 50px; background: linear-gradient(135deg, #6c757d, #495057); color: white; font-weight: 600; font-size: 1.25rem;">
+                                        {{ block.blocked.first_name.0 }}{{ block.blocked.last_name.0 }}
+                                    </div>
+                                    <div>
+                                        <h5 class="mb-1">{{ block.blocked.first_name }} {{ block.blocked.last_name }}</h5>
+                                        <p class="mb-0 small text-secondary">
+                                            @{{ block.blocked.username }} • Blocked on {{ block.created_at|date:"M d, Y" }}
+                                        </p>
+                                    </div>
+                                </div>
+                                <a href="{% url 'moderation:unblock_user' block.blocked.id %}" class="btn btn-success">
+                                    <i class="bi bi-unlock"></i> Unblock
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="card-custom text-center py-5">
+                <i class="bi bi-slash-circle display-1 text-secondary mb-3"></i>
+                <h4>No Blocked Users</h4>
+                <p class="text-secondary mb-0">You haven't blocked anyone</p>
+            </div>
+        {% endif %}
+        
+        <div class="text-center mt-4">
+            <a href="{% url 'messaging:inbox' %}" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Back to Messages
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

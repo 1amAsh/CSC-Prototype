@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% block title %}Competitions{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="display-4 fw-bold"><i class="bi bi-trophy"></i> Competitions</h1>
+        <p class="text-secondary">Test your skills and compete with others</p>
+    </div>
+    {% if user.is_admin %}
+        <a href="{% url 'competitions:create' %}" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> Create Competition
+        </a>
+    {% endif %}
+</div>
+
+{% if competitions %}
+    <div class="row g-4">
+        {% for comp in competitions %}
+            <div class="col-md-6 col-lg-4">
+                <div class="card-custom h-100">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <h3 class="mb-0">{{ comp.title }}</h3>
+                        <span class="badge {% if comp.status == 'active' %}bg-success{% elif comp.status == 'upcoming' %}bg-primary{% else %}bg-secondary{% endif %}">
+                            {{ comp.get_status_display }}
+                        </span>
+                    </div>
+                    <p class="text-secondary mb-3">{{ comp.description|truncatewords:20 }}</p>
+                    <div class="small text-secondary mb-3">
+                        <div><i class="bi bi-calendar"></i> {{ comp.start_date|date:"M d" }} - {{ comp.end_date|date:"M d, Y" }}</div>
+                        <div><i class="bi bi-people"></i> {{ comp.total_participants }} participant{{ comp.total_participants|pluralize }}</div>
+                        <div><i class="bi bi-trophy"></i> Max Score: {{ comp.max_score }}</div>
+                    </div>
+                    <div class="d-flex gap-2 mt-auto">
+                        <a href="{% url 'competitions:detail' comp.pk %}" class="btn btn-primary btn-sm flex-grow-1">
+                            <i class="bi bi-eye"></i> View
+                        </a>
+                        <a href="{% url 'competitions:leaderboard' comp.pk %}" class="btn btn-outline-secondary btn-sm">
+                            <i class="bi bi-list-ol"></i> Leaderboard
+                        </a>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="card-custom text-center py-5">
+        <i class="bi bi-trophy display-1 text-secondary mb-4"></i>
+        <h3>No competitions yet</h3>
+        <p class="text-secondary">Check back later for upcoming competitions!</p>
+        {% if user.is_admin %}
+            <a href="{% url 'competitions:create' %}" class="btn btn-primary mt-3">
+                <i class="bi bi-plus-circle"></i> Create First Competition
+            </a>
+        {% endif %}
+    </div>
+{% endif %}
+{% endblock %}

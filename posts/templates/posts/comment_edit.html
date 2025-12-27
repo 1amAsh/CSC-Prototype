@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit Comment{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-5 col-md-7">
+        <div class="card-custom">
+            <div class="text-center mb-4">
+                <div class="rounded-circle d-inline-flex align-items-center justify-content-center mb-3" 
+                     style="width: 80px; height: 80px; background: linear-gradient(135deg, #f59e0b, #d97706); color: white; font-size: 2rem;">
+                    <i class="bi bi-pencil"></i>
+                </div>
+                <h1 class="display-5 fw-bold" style="background: linear-gradient(135deg, #f59e0b, #d97706); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                    Edit Comment
+                </h1>
+                <p class="text-secondary">Update your comment</p>
+            </div>
+            
+            <div class="card-custom mb-4" style="background: var(--bg-tertiary);">
+                <small class="text-secondary d-block mb-1">On post:</small>
+                <h6 class="mb-0">{{ comment.post.title }}</h6>
+            </div>
+            
+            <form method="post">
+                {% csrf_token %}
+                
+                <div class="mb-4">
+                    <label for="content" class="form-label fw-bold">
+                        <i class="bi bi-chat-left-text"></i> Comment
+                    </label>
+                    <textarea 
+                        id="content" 
+                        name="content" 
+                        rows="5"
+                        required
+                        class="form-control"
+                    >{{ comment.content }}</textarea>
+                </div>
+                
+                <button type="submit" class="btn btn-warning w-100 btn-lg mb-2">
+                    <i class="bi bi-check-circle"></i> Update Comment
+                </button>
+                <a href="{% url 'posts:detail' comment.post.pk %}" class="btn btn-secondary w-100">
+                    <i class="bi bi-arrow-left"></i> Cancel
+                </a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

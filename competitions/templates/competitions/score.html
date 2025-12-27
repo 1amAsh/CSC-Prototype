@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+
+{% block title %}Score Submission{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card-custom">
+            <div class="text-center mb-4">
+                <h1 class="display-5 fw-bold" style="background: linear-gradient(135deg, #6366f1, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                    <i class="bi bi-star"></i> Score Submission
+                </h1>
+            </div>
+            
+            <div class="card-custom mb-4" style="background: var(--bg-tertiary);">
+                <div class="d-flex align-items-center gap-3 mb-3">
+                    <div class="rounded-circle d-flex align-items-center justify-content-center" 
+                         style="width: 60px; height: 60px; background: linear-gradient(135deg, #6366f1, #8b5cf6); color: white; font-weight: 600; font-size: 1.5rem;">
+                        {{ submission.user.first_name.0 }}{{ submission.user.last_name.0 }}
+                    </div>
+                    <div>
+                        <h4 class="mb-1">{{ submission.user.first_name }} {{ submission.user.last_name }}</h4>
+                        <p class="mb-0 small text-secondary">@{{ submission.user.username }}</p>
+                    </div>
+                </div>
+                
+                <div class="row g-2 mb-3">
+                    <div class="col-md-6">
+                        <strong>Competition:</strong> {{ submission.competition.title }}
+                    </div>
+                    <div class="col-md-6">
+                        <strong>Submitted:</strong> {{ submission.submitted_at|date:"M d, Y g:i A" }}
+                    </div>
+                </div>
+                
+                <h6 class="mb-2"><i class="bi bi-code-slash"></i> Solution</h6>
+                <div class="card-custom p-3" style="background: var(--bg-primary); font-family: 'Courier New', monospace; white-space: pre-wrap; overflow-x: auto; max-height: 300px; overflow-y: auto;">{{ submission.solution }}</div>
+            </div>
+            
+            <form method="post">
+                {% csrf_token %}
+                
+                <div class="mb-3">
+                    <label for="{{ form.score.id_for_label }}" class="form-label fw-bold">
+                        <i class="bi bi-star-fill"></i> Score (Max: {{ submission.competition.max_score }})
+                    </label>
+                    {{ form.score }}
+                    {% if form.score.errors %}
+                        <div class="text-danger small mt-1">{{ form.score.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="mb-4">
+                    <label for="{{ form.feedback.id_for_label }}" class="form-label fw-bold">
+                        <i class="bi bi-chat-left-text"></i> Feedback
+                        <span class="text-secondary fw-normal">(Optional)</span>
+                    </label>
+                    {{ form.feedback }}
+                    {% if form.feedback.errors %}
+                        <div class="text-danger small mt-1">{{ form.feedback.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                
+                <button type="submit" class="btn btn-success w-100 btn-lg mb-2">
+                    <i class="bi bi-check-circle"></i> Save Score
+                </button>
+                <a href="{% url 'competitions:submissions' submission.competition.pk %}" class="btn btn-secondary w-100">
+                    <i class="bi bi-arrow-left"></i> Cancel
+                </a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

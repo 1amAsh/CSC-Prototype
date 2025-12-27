@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+
+{% block title %}Reports Dashboard{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h1 class="display-4 fw-bold"><i class="bi bi-shield-exclamation"></i> Reports Dashboard</h1>
+                <p class="text-secondary mb-0">Review and manage user reports</p>
+            </div>
+        </div>
+        
+        <div class="alert alert-info mb-4">
+            <i class="bi bi-chat-dots"></i> 
+            <strong>Tip:</strong> Discuss reports in the 
+            <a href="{% url 'messaging:group_chat' 'admin' %}" class="alert-link fw-bold">Admin Group Chat</a> 
+            before taking action.
+        </div>
+        
+        <h2 class="mb-4">
+            <i class="bi bi-hourglass-split"></i> Unreviewed Reports 
+            <span class="badge bg-warning text-dark">{{ unreviewed_reports.count }}</span>
+        </h2>
+        
+        {% if unreviewed_reports %}
+            <div class="row g-4 mb-5">
+                {% for report in unreviewed_reports %}
+                    <div class="col-12">
+                        <div class="card-custom" style="border-left: 4px solid var(--warning);">
+                            <div class="d-flex justify-content-between align-items-start flex-wrap gap-3">
+                                <div class="flex-grow-1">
+                                    <div class="d-flex align-items-center gap-3 mb-3">
+                                        <div class="rounded-circle d-flex align-items-center justify-content-center" 
+                                             style="width: 50px; height: 50px; background: linear-gradient(135deg, #f59e0b, #d97706); color: white; font-weight: 600; font-size: 1.25rem;">
+                                            {{ report.reported_user.first_name.0 }}{{ report.reported_user.last_name.0 }}
+                                        </div>
+                                        <div>
+                                            <h4 class="mb-1">{{ report.reported_user.first_name }} {{ report.reported_user.last_name }}</h4>
+                                            <p class="mb-0 small text-secondary">@{{ report.reported_user.username }}</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="card-custom mb-2" style="background: var(--bg-tertiary);">
+                                        <div class="row g-2 mb-2">
+                                            <div class="col-md-6">
+                                                <strong>Reported by:</strong> @{{ report.reporter.username }}
+                                            </div>
+                                            <div class="col-md-6">
+                                                <strong>Reason:</strong> 
+                                                <span class="badge bg-warning text-dark">{{ report.get_reason_display }}</span>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <strong>Details:</strong>
+                                            <p class="mb-0 mt-1" style="white-space: pre-wrap; color: var(--text-secondary);">{{ report.description }}</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <small class="text-secondary">
+                                        <i class="bi bi-clock"></i> Submitted: {{ report.created_at|date:"M d, Y g:i A" }}
+                                    </small>
+                                </div>
+                                
+                                <div>
+                                    <a href="{% url 'moderation:mark_reviewed' report.pk %}" class="btn btn-success">
+                                        <i class="bi bi-check-circle"></i> Mark Reviewed
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="card-custom text-center py-5 mb-5">
+                <i class="bi bi-check-circle display-1 text-success mb-3"></i>
+                <h4>No Unreviewed Reports</h4>
+                <p class="text-secondary mb-0">All reports have been reviewed!</p>
+            </div>
+        {% endif %}
+        
+        <h2 class="mb-4">
+            <i class="bi bi-check-circle"></i> Recently Reviewed 
+            <span class="text-secondary">(Last 20)</span>
+        </h2>
+        
+        {% if reviewed_reports %}
+            <div class="row g-4">
+                {% for report in reviewed_reports %}
+                    <div class="col-12">
+                        <div class="card-custom" style="opacity: 0.7; border-left: 4px solid var(--success);">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h5 class="mb-1">{{ report.reported_user.username }}</h5>
+                                    <p class="mb-0 small text-secondary">
+                                        {{ report.get_reason_display }} • <i class="bi bi-check-circle-fill text-success"></i> Reviewed
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="card-custom text-center py-5">
+                <i class="bi bi-inbox display-1 text-secondary mb-3"></i>
+                <h4>No Reviewed Reports Yet</h4>
+                <p class="text-secondary mb-0">Previously reviewed reports will appear here</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

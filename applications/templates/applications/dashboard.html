@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+
+{% block title %}Applications Dashboard{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="display-4 fw-bold"><i class="bi bi-clipboard-check"></i> Applications Dashboard</h1>
+        <p class="text-secondary">Review and manage membership applications</p>
+    </div>
+</div>
+
+<div class="row g-4 mb-5">
+    <div class="col-md-4">
+        <div class="card-custom text-center" style="border-left: 4px solid var(--warning);">
+            <h2 class="display-4 fw-bold mb-2" style="color: var(--warning);">{{ pending_applications.count }}</h2>
+            <p class="text-secondary mb-0"><i class="bi bi-clock-fill"></i> Pending</p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card-custom text-center" style="border-left: 4px solid var(--success);">
+            <h2 class="display-4 fw-bold mb-2" style="color: var(--success);">{{ approved_count }}</h2>
+            <p class="text-secondary mb-0"><i class="bi bi-check-circle-fill"></i> Approved</p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card-custom text-center" style="border-left: 4px solid var(--danger);">
+            <h2 class="display-4 fw-bold mb-2" style="color: var(--danger);">{{ rejected_count }}</h2>
+            <p class="text-secondary mb-0"><i class="bi bi-x-circle-fill"></i> Rejected</p>
+        </div>
+    </div>
+</div>
+
+<h2 class="mb-4"><i class="bi bi-hourglass-split"></i> Pending Applications</h2>
+
+{% if pending_applications %}
+    <div class="row g-4">
+        {% for app in pending_applications %}
+            <div class="col-12">
+                <div class="card-custom" style="border-left: 4px solid var(--warning);">
+                    <div class="row align-items-center">
+                        <div class="col-lg-8">
+                            <div class="d-flex align-items-center gap-3 mb-3">
+                                <div class="rounded-circle d-flex align-items-center justify-content-center" 
+                                     style="width: 50px; height: 50px; background: linear-gradient(135deg, #f59e0b, #d97706); color: white; font-weight: 600; font-size: 1.25rem;">
+                                    {{ app.first_name.0 }}{{ app.last_name.0 }}
+                                </div>
+                                <div>
+                                    <h4 class="mb-1">{{ app.first_name }} {{ app.last_name }}</h4>
+                                    <p class="mb-0 small text-secondary">
+                                        @{{ app.username }} • {{ app.email }}
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="row g-2 small">
+                                <div class="col-sm-6">
+                                    <i class="bi bi-calendar text-secondary"></i> Age: {{ app.age }}
+                                </div>
+                                <div class="col-sm-6">
+                                    <i class="bi bi-building text-secondary"></i> {{ app.school }}
+                                </div>
+                                <div class="col-12">
+                                    <i class="bi bi-clock text-secondary"></i> Submitted: {{ app.submitted_at|date:"M d, Y" }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 text-lg-end mt-3 mt-lg-0">
+                            <div class="d-flex flex-lg-column gap-2">
+                                <a href="{% url 'applications:detail' app.pk %}" class="btn btn-info btn-sm">
+                                    <i class="bi bi-eye"></i> View Details
+                                </a>
+                                <a href="{% url 'applications:approve' app.pk %}" class="btn btn-success btn-sm">
+                                    <i class="bi bi-check-circle"></i> Accept
+                                </a>
+                                <a href="{% url 'applications:reject' app.pk %}" class="btn btn-danger btn-sm">
+                                    <i class="bi bi-x-circle"></i> Reject
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="card-custom text-center py-5">
+        <i class="bi bi-inbox display-1 text-secondary mb-3"></i>
+        <h4>No Pending Applications</h4>
+        <p class="text-secondary mb-0">All applications have been processed!</p>
+    </div>
+{% endif %}
+{% endblock %}

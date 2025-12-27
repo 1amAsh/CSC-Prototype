@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+
+{% block title %}Application: {{ application.username }}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+        <div class="card-custom">
+            <div class="text-center mb-4">
+                <div class="rounded-circle d-inline-flex align-items-center justify-content-center mb-3" 
+                     style="width: 80px; height: 80px; background: linear-gradient(135deg, #6366f1, #8b5cf6); color: white; font-weight: 600; font-size: 2rem;">
+                    {{ application.first_name.0 }}{{ application.last_name.0 }}
+                </div>
+                <h1 class="h2">Application Details</h1>
+                <p class="text-secondary">Review the full application before making a decision</p>
+            </div>
+            
+            <div class="card-custom mb-4" style="background: var(--bg-tertiary);">
+                <h4 class="mb-3 pb-2 border-bottom" style="border-color: var(--border-color) !important;">
+                    <i class="bi bi-lock-fill"></i> Account Information
+                </h4>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="text-secondary small">Full Name</label>
+                        <p class="fw-bold mb-0">{{ application.first_name }} {{ application.last_name }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="text-secondary small">Requested Username</label>
+                        <p class="fw-bold mb-0">@{{ application.username }}</p>
+                    </div>
+                    <div class="col-12">
+                        <label class="text-secondary small">Email</label>
+                        <p class="fw-bold mb-0">{{ application.email }}</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card-custom mb-4" style="background: var(--bg-tertiary);">
+                <h4 class="mb-3 pb-2 border-bottom" style="border-color: var(--border-color) !important;">
+                    <i class="bi bi-person-fill"></i> Personal Information
+                </h4>
+                <div class="row g-3 mb-3">
+                    <div class="col-md-6">
+                        <label class="text-secondary small">Age</label>
+                        <p class="fw-bold mb-0">{{ application.age }} years old</p>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="text-secondary small">School</label>
+                        <p class="fw-bold mb-0">{{ application.school }}</p>
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="text-secondary small d-block mb-2">
+                        <i class="bi bi-code-slash"></i> Programming Experience
+                    </label>
+                    <div class="card-custom p-3" style="background: var(--bg-primary); white-space: pre-wrap;">{{ application.programming_experience }}</div>
+                </div>
+                
+                <div>
+                    <label class="text-secondary small d-block mb-2">
+                        <i class="bi bi-chat-left-text"></i> Why Join
+                    </label>
+                    <div class="card-custom p-3" style="background: var(--bg-primary); white-space: pre-wrap;">{{ application.why_join }}</div>
+                </div>
+            </div>
+            
+            <div class="text-center text-secondary small mb-4">
+                <i class="bi bi-clock"></i> Submitted: {{ application.submitted_at|date:"F d, Y \a\t g:i A" }}
+            </div>
+            
+            {% if application.status == 'pending' %}
+                <div class="d-flex gap-2">
+                    <a href="{% url 'applications:dashboard' %}" class="btn btn-secondary">
+                        <i class="bi bi-arrow-left"></i> Back
+                    </a>
+                    <a href="{% url 'applications:approve' application.pk %}" class="btn btn-success flex-grow-1">
+                        <i class="bi bi-check-circle"></i> Accept Application
+                    </a>
+                    <a href="{% url 'applications:reject' application.pk %}" class="btn btn-danger flex-grow-1">
+                        <i class="bi bi-x-circle"></i> Reject Application
+                    </a>
+                </div>
+            {% else %}
+                <div class="card-custom text-center" style="background: {% if application.status == 'approved' %}linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(5, 150, 105, 0.05)){% else %}linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(220, 38, 38, 0.05)){% endif %};">
+                    <h5 class="mb-0">
+                        {% if application.status == 'approved' %}
+                            <i class="bi bi-check-circle-fill text-success"></i> <span class="text-success">APPROVED</span>
+                        {% else %}
+                            <i class="bi bi-x-circle-fill text-danger"></i> <span class="text-danger">REJECTED</span>
+                        {% endif %}
+                    </h5>
+                </div>
+                <div class="text-center mt-3">
+                    <a href="{% url 'applications:dashboard' %}" class="btn btn-secondary">
+                        <i class="bi bi-arrow-left"></i> Back to Dashboard
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

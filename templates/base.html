@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Club Website{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        :root[data-theme="dark"] {
+            --bg-primary: #0f0f1e;
+            --bg-secondary: #1a1a2e;
+            --bg-tertiary: #16213e;
+            --text-primary: #f4f4f5;
+            --text-secondary: #d4d4d8;
+            --text-muted: #a1a1aa;
+            --accent-primary: #6366f1;
+            --accent-secondary: #8b5cf6;
+            --border-color: #27272a;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --input-bg: #1a1a2e;
+            --input-text: #f4f4f5;
+        }
+        
+        :root[data-theme="light"] {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f9fafb;
+            --bg-tertiary: #f3f4f6;
+            --text-primary: #1f2937;
+            --text-secondary: #4b5563;
+            --text-muted: #9ca3af;
+            --accent-primary: #6366f1;
+            --accent-secondary: #8b5cf6;
+            --border-color: #e5e7eb;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --input-bg: #ffffff;
+            --input-text: #1f2937;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            min-height: 100vh;
+            transition: background 0.3s, color 0.3s;
+        }
+        
+        /* Navbar */
+        .navbar-custom {
+            background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 0;
+        }
+        
+        .navbar-brand {
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 700;
+            font-size: 1.5rem;
+        }
+        
+        .nav-link {
+            color: var(--text-secondary) !important;
+            transition: color 0.3s;
+            margin: 0 0.5rem;
+        }
+        
+        .nav-link:hover { color: var(--accent-primary) !important; }
+        
+        .nav-link.active { color: var(--accent-primary) !important; }
+        
+        /* Theme Toggle */
+        .theme-toggle {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .theme-toggle:hover {
+            transform: rotate(180deg);
+            background: var(--accent-primary);
+        }
+        
+        /* Badges */
+        .unread-badge {
+            background: linear-gradient(135deg, var(--danger), #dc2626);
+            color: white;
+            padding: 0.2rem 0.5rem;
+            border-radius: 10px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-left: 0.5rem;
+        }
+        
+        /* Buttons */
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            font-weight: 600;
+            transition: transform 0.3s, box-shadow 0.3s;
+            color: white !important;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(99, 102, 241, 0.3);
+            color: white !important;
+        }
+        
+        .btn-secondary, .btn-outline-secondary {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary) !important;
+        }
+        
+        .btn-outline-light {
+            border: 2px solid var(--text-secondary);
+            color: var(--text-primary) !important;
+        }
+        
+        /* Form Controls */
+        .form-control, .form-select, textarea {
+            background: var(--input-bg) !important;
+            border: 1px solid var(--border-color) !important;
+            color: var(--input-text) !important;
+            border-radius: 8px;
+        }
+        
+        .form-control:focus, .form-select:focus, textarea:focus {
+            border-color: var(--accent-primary) !important;
+            box-shadow: 0 0 0 0.2rem rgba(99, 102, 241, 0.25) !important;
+            background: var(--input-bg) !important;
+            color: var(--input-text) !important;
+        }
+        
+        .form-label {
+            color: var(--text-primary) !important;
+        }
+        
+        /* Cards */
+        .card-custom {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 2rem;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .card-custom:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* Messages */
+        .alert {
+            border-radius: 12px;
+            border: none;
+            padding: 1rem 1.5rem;
+        }
+        
+        .alert-success { background: rgba(16, 185, 129, 0.1); border-left: 4px solid var(--success); color: var(--success); }
+        .alert-danger { background: rgba(239, 68, 68, 0.1); border-left: 4px solid var(--danger); color: var(--danger); }
+        .alert-warning { background: rgba(245, 158, 11, 0.1); border-left: 4px solid var(--warning); color: var(--warning); }
+        .alert-info { background: rgba(99, 102, 241, 0.1); border-left: 4px solid var(--accent-primary); color: var(--accent-primary); }
+        
+        /* Footer */
+        footer {
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--border-color);
+            padding: 2rem 0;
+            margin-top: 4rem;
+            text-align: center;
+            color: var(--text-secondary);
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-custom sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'core:home' %}">
+                <i class="bi bi-code-slash"></i> Club Hub
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item"><a class="nav-link" href="{% url 'core:home' %}"><i class="bi bi-house"></i> Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'core:about' %}"><i class="bi bi-info-circle"></i> About</a></li>
+                    
+                    {% if user.is_authenticated %}
+                        <li class="nav-item"><a class="nav-link" href="{% url 'accounts:members' %}"><i class="bi bi-people"></i> Members</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'posts:list' %}"><i class="bi bi-newspaper"></i> Posts</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'competitions:list' %}"><i class="bi bi-trophy"></i> Competitions</a></li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'messaging:inbox' %}">
+                                <i class="bi bi-chat-dots"></i> Messages
+                                <span id="unread-badge" class="unread-badge" style="display: none;"></span>
+                            </a>
+                        </li>
+                        {% if user.is_admin %}
+                            <li class="nav-item"><a class="nav-link" href="{% url 'applications:dashboard' %}"><i class="bi bi-clipboard-check"></i> Applications</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{% url 'moderation:reports_dashboard' %}"><i class="bi bi-shield-exclamation"></i> Reports</a></li>
+                        {% endif %}
+                        <li class="nav-item"><a class="nav-link" href="{% url 'accounts:profile' %}"><i class="bi bi-person-circle"></i> Profile</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'accounts:logout' %}"><i class="bi bi-box-arrow-right"></i> Logout</a></li>
+                    {% else %}
+                        <li class="nav-item"><a class="nav-link" href="{% url 'applications:apply' %}"><i class="bi bi-file-earmark-text"></i> Apply</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'accounts:login' %}"><i class="bi bi-box-arrow-in-right"></i> Login</a></li>
+                    {% endif %}
+                    
+                    <li class="nav-item ms-3">
+                        <button class="theme-toggle" onclick="toggleTheme()">
+                            <i class="bi bi-moon-stars" id="theme-icon"></i>
+                        </button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container my-4">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        {% block content %}{% endblock %}
+    </div>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 Club Hub. Built with <i class="bi bi-heart-fill text-danger"></i></p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Theme Toggle
+        function toggleTheme() {
+            const html = document.documentElement;
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            document.getElementById('theme-icon').className = newTheme === 'dark' ? 'bi bi-moon-stars' : 'bi bi-sun';
+        }
+        
+        // Load saved theme
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        document.getElementById('theme-icon').className = savedTheme === 'dark' ? 'bi bi-moon-stars' : 'bi bi-sun';
+        
+        {% if user.is_authenticated %}
+        // Unread messages badge
+        setInterval(() => {
+            fetch('/messages/api/check-new/')
+                .then(r => r.json())
+                .then(data => {
+                    const badge = document.getElementById('unread-badge');
+                    if (data.total_unread > 0) {
+                        badge.textContent = data.total_unread;
+                        badge.style.display = 'inline';
+                    } else {
+                        badge.style.display = 'none';
+                    }
+                });
+        }, 3000);
+        {% endif %}
+    </script>
+</body>
+</html>

@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="card-custom text-center">
+    <h1 class="mb-3">Welcome to Club Hub</h1>
+    <p class="text-secondary">Join competitions, post updates, and connect.</p>
+    <a href="{% url 'applications:apply' %}" class="btn btn-primary mt-3">Apply Now</a>
+</div>
+{% endblock %}

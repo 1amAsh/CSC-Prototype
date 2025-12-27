@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+
+{% block title %}About - Club Website{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+        <div class="text-center mb-5">
+            <div class="rounded-circle d-inline-flex align-items-center justify-content-center mb-3" 
+                 style="width: 100px; height: 100px; background: linear-gradient(135deg, #6366f1, #8b5cf6); color: white; font-size: 3rem;">
+                <i class="bi bi-info-circle"></i>
+            </div>
+            <h1 class="display-3 fw-bold" style="background: linear-gradient(135deg, #6366f1, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                About Our Club
+            </h1>
+        </div>
+        
+        <div class="card-custom mb-4">
+            <h2 class="mb-3"><i class="bi bi-people-fill"></i> Who We Are</h2>
+            <p class="lead" style="line-height: 1.8; color: var(--text-secondary);">
+                We are a community of passionate programmers dedicated to improving our skills 
+                through competitive programming, collaborative projects, and knowledge sharing.
+            </p>
+        </div>
+        
+        <div class="card-custom mb-4" style="background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.05));">
+            <h2 class="mb-4"><i class="bi bi-star-fill"></i> What We Do</h2>
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <div class="d-flex gap-3">
+                        <div class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" 
+                             style="width: 50px; height: 50px; background: linear-gradient(135deg, #6366f1, #8b5cf6); color: white;">
+                            <i class="bi bi-trophy-fill"></i>
+                        </div>
+                        <div>
+                            <h5>Host Competitions</h5>
+                            <p class="mb-0 text-secondary">Regular programming competitions to sharpen your skills</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="d-flex gap-3">
+                        <div class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" 
+                             style="width: 50px; height: 50px; background: linear-gradient(135deg, #10b981, #059669); color: white;">
+                            <i class="bi bi-lightbulb-fill"></i>
+                        </div>
+                        <div>
+                            <h5>Share Knowledge</h5>
+                            <p class="mb-0 text-secondary">Posts and discussions to learn from each other</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="d-flex gap-3">
+                        <div class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" 
+                             style="width: 50px; height: 50px; background: linear-gradient(135deg, #f59e0b, #d97706); color: white;">
+                            <i class="bi bi-people"></i>
+                        </div>
+                        <div>
+                            <h5>Build Community</h5>
+                            <p class="mb-0 text-secondary">A supportive environment for all skill levels</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="d-flex gap-3">
+                        <div class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" 
+                             style="width: 50px; height: 50px; background: linear-gradient(135deg, #ef4444, #dc2626); color: white;">
+                            <i class="bi bi-book-fill"></i>
+                        </div>
+                        <div>
+                            <h5>Provide Resources</h5>
+                            <p class="mb-0 text-secondary">Curated resources for continuous growth</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="d-flex gap-3">
+                        <div class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" 
+                             style="width: 50px; height: 50px; background: linear-gradient(135deg, #8b5cf6, #7c3aed); color: white;">
+                            <i class="bi bi-graph-up"></i>
+                        </div>
+                        <div>
+                            <h5>Track Progress</h5>
+                            <p class="mb-0 text-secondary">Monitor your growth and celebrate achievements</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="d-flex gap-3">
+                        <div class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" 
+                             style="width: 50px; height: 50px; background: linear-gradient(135deg, #06b6d4, #0891b2); color: white;">
+                            <i class="bi bi-chat-dots-fill"></i>
+                        </div>
+                        <div>
+                            <h5>Collaborate</h5>
+                            <p class="mb-0 text-secondary">Work together on projects and learn as a team</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card-custom mb-4">
+            <h2 class="mb-3"><i class="bi bi-clipboard-check"></i> How to Join</h2>
+            <p class="lead" style="line-height: 1.8; color: var(--text-secondary);">
+                Membership is by application only. Prospective members submit an application 
+                which is reviewed by our admin team. We look for dedicated individuals who 
+                are passionate about programming and eager to contribute to our community.
+            </p>
+        </div>
+        
+        <div class="card-custom text-center" style="background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(139, 92, 246, 0.1));">
+            <h2 class="mb-3">Ready to Apply?</h2>
+            <p class="text-secondary mb-4">
+                Join our community of programmers and take your skills to the next level!
+            </p>
+            <a href="{% url 'applications:apply' %}" class="btn btn-primary btn-lg">
+                <i class="bi bi-file-earmark-text"></i> Apply for Membership
+            </a>
+        </div>
+        
+        <div class="text-center mt-4">
+            <a href="{% url 'core:home' %}" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Back to Home
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
